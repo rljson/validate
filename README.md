@@ -1,0 +1,2 @@
+# validate
+Validate RLJSON files
