@@ -4,5 +4,4 @@
 // Use of this source code is governed by terms that can be
 // found in the LICENSE file in the root of this package.
 
-export { Validate } from './validate.ts';
-export { type Errors } from './validation-result.ts';
+export { Validate, type Errors } from './validate.ts';
