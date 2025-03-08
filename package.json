@@ -1,6 +1,6 @@
 {
   "name": "@rljson/validate",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Validate rljson files",
   "homepage": "https://github.com/rljson/validate",
   "bugs": "https://github.com/rljson/validate/issues",
@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/rljson/validate.git"
   },
-  "main": "dist/index.js",
+  "main": "dist/validate.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
