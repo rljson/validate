@@ -1,0 +1,25 @@
+
+Rljson is fine? validate return empty JSON.
+  {}
+
+Table is missing? validate returns error JSON.
+  {
+  "tableNamesAreLowerCamelCase": {
+    "error": "Table names must be lower camel case",
+    "invalidTableNames": [
+      "table_One",
+      "table_Two"
+    ]
+  },
+  "columnNamesAreLowerCamelCase": {
+    "error": "Column names must be lower camel case",
+    "invalidColumnNames": {
+      "table_One": [
+        "x_7"
+      ]
+    }
+  }
+}
+
+Table name starts with underscore? No error is returned.
+  {}

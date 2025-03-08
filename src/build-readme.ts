@@ -6,7 +6,7 @@
 
 import { mkdir, readFile, writeFile } from 'fs/promises';
 
-const importKey = "import { Validate } from './validate.ts';";
+const importKey = "import { validate } from './validate.ts';";
 
 export const buildReadme = async () => {
   // Read README.public.md

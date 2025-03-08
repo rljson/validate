@@ -5,9 +5,16 @@
 // found in the LICENSE file in the root of this package.
 
 import { Rljson } from '@rljson/format';
+import { RljsonTable } from '@rljson/format/dist/rljson.js';
+import { Json } from '@rljson/json';
 
-import { SingleResult, ValidationResult } from './validation-result.ts';
+// .............................................................................
+export interface Errors {
+  tableNamesAreLowerCamelCase?: Json;
+  columnNamesAreLowerCamelCase?: Json;
+}
 
+// .............................................................................
 /**
  * The main class of the package
  */
@@ -20,32 +27,78 @@ export class Validate {
 
   /**
    * Validates the rljson object
-   * @returns The result of the validation
+   * @returns Returns 'ok' if there are no errors,
+   * otherwise an object with the errors.
    */
-  get result(): ValidationResult {
-    return {
-      tableNamesAreLowerCamelCase: this._tableNamesAreLowerCamelCase,
-    };
+  get result(): Errors {
+    const errors = {};
+
+    this._tableNamesAreLowerCamelCase(errors);
+    this._columnNamesAreLowerCamelCase(errors);
+
+    return errors;
   }
 
   // ######################
   // Private
   // ######################
-  get _tableNamesAreLowerCamelCase(): SingleResult {
+  private _tableNamesAreLowerCamelCase(errors: Json): void {
     const invalidTableNames: string[] = [];
 
-    for (const tableName of Object.keys(this.rljson)) {
+    for (const tableName in this.rljson) {
+      if (tableName.startsWith('_')) {
+        continue;
+      }
+
       if (!/^[a-z][a-zA-Z0-9]*$/.test(tableName)) {
         invalidTableNames.push(tableName);
       }
     }
 
-    return invalidTableNames.length === 0
-      ? 'ok'
-      : {
-          error: 'Table names must be lower camel case',
-          invalidTableNames: invalidTableNames,
-        };
+    if (invalidTableNames.length > 0) {
+      errors.tableNamesAreLowerCamelCase = {
+        error: 'Table names must be lower camel case',
+        invalidTableNames: invalidTableNames,
+      };
+    }
+  }
+
+  // ...........................................................................
+
+  private _columnNamesAreLowerCamelCase(errors: Json): void {
+    const invalidColumnNames: {
+      [tableName: string]: string[];
+    } = {};
+
+    let hadErrors = false;
+
+    for (const tableName in this.rljson) {
+      if (tableName.startsWith('_')) {
+        continue;
+      }
+
+      const table = this.rljson[tableName] as RljsonTable<any, any>;
+      for (const row of table._data) {
+        for (const columnName in row) {
+          if (columnName.startsWith('_')) {
+            continue;
+          }
+
+          if (!/^[a-z][a-zA-Z0-9]*$/.test(columnName)) {
+            invalidColumnNames[tableName] ??= [];
+            invalidColumnNames[tableName].push(columnName);
+            hadErrors = true;
+          }
+        }
+      }
+    }
+
+    if (hadErrors) {
+      errors.columnNamesAreLowerCamelCase = {
+        error: 'Column names must be lower camel case',
+        invalidColumnNames: invalidColumnNames,
+      };
+    }
   }
 }
 
@@ -54,6 +107,6 @@ export class Validate {
  * @param rljson - The rljson object to validate
  * @returns The result of the validation
  */
-export const validate = (rljson: Rljson): ValidationResult => {
+export const validate = (rljson: Rljson): Errors => {
   return new Validate(rljson).result;
 };
