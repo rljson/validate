@@ -14,11 +14,9 @@ export const example = () => {
   const print = console.log;
   const assert = console.assert;
 
-  const validate = new Foo();
-  print(validate.foo());
-  assert(validate.foo() === 'bar');
+  const validate = new Validate();
+  print(validate.validate());
+  assert(validate.validate() === 'bar');
 };
-
-export class X {}
 
 ```

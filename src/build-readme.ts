@@ -6,6 +6,8 @@
 
 import { mkdir, readFile, writeFile } from 'fs/promises';
 
+const importKey = "import { Validate } from './validate.ts';";
+
 export const buildReadme = async () => {
   // Read README.public.md
   const readme = await readFile('README.public.md', 'utf-8');
@@ -20,7 +22,6 @@ export const buildReadme = async () => {
   );
 
   // Replace import
-  const importKey = "import { Foo } from './foo.ts';";
   /* v8 ignore start */
   if (!example.includes(importKey)) {
     throw new Error('example.ts must include ' + importKey);

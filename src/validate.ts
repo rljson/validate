@@ -7,8 +7,8 @@
 /**
  * The main class of the package
  */
-export class Foo {
-  foo() {
+export class Validate {
+  validate() {
     return 'bar';
   }
 }

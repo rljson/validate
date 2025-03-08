@@ -6,13 +6,13 @@
 
 import { describe, expect, it } from 'vitest';
 
-import { Foo } from '../src/foo';
+import { Validate } from '../src/validate';
 
-describe('Foo', () => {
-  describe('foo()', () => {
+describe('Validate', () => {
+  describe('validate()', () => {
     it('should return "bar"', () => {
-      const foo = new Foo();
-      expect(foo.foo()).toBe('bar');
+      const validate = new Validate();
+      expect(validate.validate()).toBe('bar');
     });
   });
 });
