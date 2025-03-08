@@ -4,16 +4,32 @@
 // Use of this source code is governed by terms that can be
 // found in the LICENSE file in the root of this package.
 
-import { describe, it } from 'vitest';
+import { readFile, writeFile } from 'fs/promises';
+import { describe, expect, it } from 'vitest';
 
 import { example } from '../src/example';
 
+import { updateGoldens } from './goldens/update-goldens';
+
 describe('example', () => {
-  it('should run without error', () => {
-    // Mock console.log
+  it('should run without error', async () => {
+    // Execute example
     const logMessages: string[] = [];
+    const log = console.log;
     console.log = (message: string) => logMessages.push(message);
     example();
-    console.log = console.log;
+
+    // Write golden file
+    const logFilePath = 'test/goldens/example.log';
+    if (updateGoldens) {
+      await writeFile(logFilePath, logMessages.join('\n'));
+    }
+
+    // Compare log messages with golden file
+    const golden = await readFile(logFilePath, 'utf8');
+    expect(golden).toBe(logMessages.join('\n'));
+
+    // Restore console.log
+    console.log = log;
   });
 });
