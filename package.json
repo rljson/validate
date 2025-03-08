@@ -49,5 +49,10 @@
     "@rljson/format": "^0.0.1",
     "@rljson/hash": "^0.0.3",
     "@rljson/json": "^0.0.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }
