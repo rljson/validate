@@ -28,6 +28,7 @@ export default [
       'jsdoc/require-description': 'error',
       'jsdoc/require-param-type': 'off',
       'jsdoc/require-jsdoc': 'error',
+      'jsdoc/require-returns-type': 'off',
     },
   },
 
