@@ -9,7 +9,8 @@ import { describe, expect, it } from 'vitest';
 
 import { example } from '../src/example';
 
-import { updateGoldens } from './goldens/update-goldens';
+import { updateGoldens } from './setup/goldens.ts';
+
 
 describe('example', () => {
   it('should run without error', async () => {
