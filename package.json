@@ -1,6 +1,7 @@
 {
   "name": "@rljson/validate",
   "version": "0.0.3",
+  "packageManager": "pnpm@10.6.2",
   "description": "Validate rljson files",
   "homepage": "https://github.com/rljson/validate",
   "bugs": "https://github.com/rljson/validate/issues",
