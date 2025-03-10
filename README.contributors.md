@@ -24,36 +24,22 @@ git clone https://github.com/rljson/validate.git
 cd validate
 ```
 
-## Install pnpm
-
-Windows:
-
-```bash
-corepack enable pnpm
-```
-
-Mac:
-
-```bash
-sudo corepack enable pnpm
-```
-
 ## Install dependencies
 
 ```bash
-pnpm install
+npm install
 ```
 
 ## Run the tests
 
 ```bash
-pnpm run test
+npm run test
 ```
 
 ## Build the package
 
 ```bash
-pnpm run build
+npm run build
 ```
 
 ## Publish the package
@@ -65,13 +51,13 @@ Increase `version`.
 Compile typescript:
 
 ```bash
-pnpm run build
+npm run build
 ```
 
 Make publish dry-run
 
 ```bash
-pnpm publish --access=public --dry-run
+npm publish --access=public --dry-run
 ```
 
 Check the changes to uploaded
@@ -79,7 +65,7 @@ Check the changes to uploaded
 Publish the package
 
 ```bash
-pnpm publish --access=public
+npm publish --access=public
 ```
 
 ## Architecture
