@@ -1,3 +1,7 @@
+<!--
+
+-->
+
 # @rljson/validate
 
 Validate rljson files
