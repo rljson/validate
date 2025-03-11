@@ -1,6 +1,8 @@
 
 Rljson is fine? validate return empty JSON.
-  {}
+  {
+  "hasErrors": false
+}
 
 Table is missing? validate returns error JSON.
   {
@@ -18,8 +20,11 @@ Table is missing? validate returns error JSON.
         "x_7"
       ]
     }
-  }
+  },
+  "hasErrors": true
 }
 
 Table name starts with underscore? No error is returned.
-  {}
+  {
+  "hasErrors": false
+}

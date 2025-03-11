@@ -4,14 +4,17 @@
 // Use of this source code is governed by terms that can be
 // found in the LICENSE file in the root of this package.
 
-import { Rljson } from '@rljson/format';
-import { RljsonTable } from '@rljson/format/dist/rljson.js';
+import { Hash } from '@rljson/hash';
 import { Json } from '@rljson/json';
+import { Rljson, RljsonTable } from '@rljson/rljson';
 
 // .............................................................................
 export interface Errors {
   tableNamesAreLowerCamelCase?: Json;
   columnNamesAreLowerCamelCase?: Json;
+  hashesAreOk?: Json;
+
+  hasErrors: boolean;
 }
 
 // .............................................................................
@@ -26,17 +29,17 @@ export class Validate {
   constructor(public readonly rljson: Rljson) {}
 
   /**
-   * Validates the rljson object
-   * @returns Returns 'ok' if there are no errors,
-   * otherwise an object with the errors.
+   * Validates the rljson object and returns an errors object
    */
   get result(): Errors {
-    const errors = {};
+    const errors: any = {};
 
     this._tableNamesAreLowerCamelCase(errors);
     this._columnNamesAreLowerCamelCase(errors);
+    this._hashesAreOk(errors);
+    errors.hasErrors = Object.keys(errors).length > 0;
 
-    return errors;
+    return errors as Errors;
   }
 
   // ######################
@@ -64,7 +67,6 @@ export class Validate {
   }
 
   // ...........................................................................
-
   private _columnNamesAreLowerCamelCase(errors: Json): void {
     const invalidColumnNames: {
       [tableName: string]: string[];
@@ -98,6 +100,25 @@ export class Validate {
         error: 'Column names must be lower camel case',
         invalidColumnNames: invalidColumnNames,
       };
+    }
+  }
+
+  // ...........................................................................
+  private _hashesAreOk(errors: Json): void {
+    try {
+      Hash.default.validate(this.rljson, { ignoreMissingHashes: true });
+    } catch (error: any) {
+      if (error instanceof Error) {
+        errors.hashValidation = {
+          error: error.message,
+        };
+        /* v8 ignore start */
+      } else {
+        errors.hashesAreOk = {
+          error: 'Unknown error',
+        };
+      }
+      /* v8 ignore stop */
     }
   }
 }
