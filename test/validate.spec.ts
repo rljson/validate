@@ -4,6 +4,8 @@
 // Use of this source code is governed by terms that can be
 // found in the LICENSE file in the root of this package.
 
+import { hip } from '@rljson/hash';
+
 import { describe, expect, it } from 'vitest';
 
 import { validate } from '../src/validate';
@@ -14,7 +16,7 @@ describe('Validate', () => {
       describe('when all table names have camel case fields', () => {
         it('for an empy rljson object', () => {
           const r = validate({});
-          expect(r).toEqual({});
+          expect(r).toEqual({ hasErrors: false });
         });
 
         it('for an rljson object with valid table names', () => {
@@ -22,16 +24,15 @@ describe('Validate', () => {
             tableOne: { _type: 'properties', _data: [] },
             tableTwo: { _type: 'properties', _data: [] },
           });
-          expect(r).toEqual({});
+          expect(r).toEqual({ hasErrors: false });
         });
       });
 
       it('when private keys are like _type or _hash are contained', () => {
         const r = validate({
           _type: 'properties',
-          _hash: 'ABC',
         });
-        expect(r).toEqual({});
+        expect(r).toEqual({ hasErrors: false });
       });
     });
 
@@ -124,17 +125,17 @@ describe('Validate', () => {
           tableOne: { _type: 'properties', _data: [{ columnOne: 123 }] },
           tableTwo: { _type: 'properties', _data: [{ columnTwo: 456 }] },
         });
-        expect(r).toEqual({});
+        expect(r).toEqual({ hasErrors: false });
       });
 
       it('when private keys are like _type or _hash are contained', () => {
         const r = validate({
           tableOne: {
             _type: 'properties',
-            _data: [{ _type: 123, _hash: 456 }],
+            _data: [{ _type: 123 }],
           },
         });
-        expect(r).toEqual({});
+        expect(r).toEqual({ hasErrors: false });
       });
     });
 
@@ -226,6 +227,46 @@ describe('Validate', () => {
         expect(r.columnNamesAreLowerCamelCase).toEqual({
           error: 'Column names must be lower camel case',
           invalidColumnNames: { tableOne: [''] },
+        });
+      });
+    });
+  });
+
+  describe('hashesAreOk()', () => {
+    describe('returns no errors', () => {
+      it('when there are no hashes', () => {
+        expect(
+          validate({
+            tableOne: { _type: 'properties', _data: [] },
+            tableTwo: { _type: 'properties', _data: [] },
+          }).hasErrors,
+        ).toBe(false);
+      });
+
+      it('when there are valid hashes', () => {
+        expect(
+          validate(
+            hip({
+              tableOne: { _type: 'properties', _data: [] },
+              tableTwo: { _type: 'properties', _data: [] },
+            }),
+          ).hasErrors,
+        ).toBe(false);
+      });
+    });
+
+    describe('throws', () => {
+      it('when hashes are invalid', () => {
+        const errors = validate({
+          tableOne: { _type: 'properties', _data: [], _hash: 'invalid' },
+        });
+
+        expect(errors).toEqual({
+          hasErrors: true,
+          hashValidation: {
+            error:
+              'Hash at /tableOne "invalid" is wrong. Should be "DKwor-pULmCs6RY-sMyfrM".',
+          },
         });
       });
     });
