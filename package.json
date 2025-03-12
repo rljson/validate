@@ -38,6 +38,7 @@
     "eslint-plugin-tsdoc": "^0.4.0",
     "globals": "^16.0.0",
     "jsdoc": "^4.0.4",
+    "read-pkg": "^9.0.1",
     "typescript": "~5.8.2",
     "typescript-eslint": "^8.26.1",
     "vite": "^6.2.1",
@@ -50,13 +51,15 @@
   "dependencies": {
     "@rljson/hash": "^0.0.9",
     "@rljson/json": "^0.0.7",
-    "@rljson/rljson": "^0.0.6"
+    "@rljson/rljson": "link:../../../.pnpm/global/5/node_modules/@rljson/rljson"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild"
     ],
-    "overrides": {}
+    "overrides": {
+      "@rljson/rljson": "link:../../../.pnpm/global/5/node_modules/@rljson/rljson"
+    }
   },
   "packageManager": "pnpm@10.6.2+sha512.47870716bea1572b53df34ad8647b42962bc790ce2bf4562ba0f643237d7302a3d6a8ecef9e4bdfc01d23af1969aa90485d4cebb0b9638fa5ef1daef656f6c1b"
 }
