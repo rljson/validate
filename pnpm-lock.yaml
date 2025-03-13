@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@rljson/rljson': link:../../../.pnpm/global/5/node_modules/@rljson/rljson
-
 importers:
 
   .:
@@ -18,8 +15,8 @@ importers:
         specifier: ^0.0.8
         version: 0.0.8
       '@rljson/rljson':
-        specifier: link:../../../.pnpm/global/5/node_modules/@rljson/rljson
-        version: link:../../../.pnpm/global/5/node_modules/@rljson/rljson
+        specifier: ^0.0.7
+        version: 0.0.7
     devDependencies:
       '@types/node':
         specifier: ^22.13.10
@@ -400,8 +397,20 @@ packages:
     resolution: {integrity: sha512-R0/ztl0i7SI+zT60nkXh/tDAJNfbTXH7+6JiXrY6/nrfczwo1lf+RtIh+n21MMssMGa22sPD8l2WHV2TQGc1SQ==}
     engines: {node: '>=22.14.0'}
 
+  '@rljson/hash@0.0.9':
+    resolution: {integrity: sha512-o29trLdi1wTZ3l+g8KCHHWevq78WXsk5+gq1KN5qoAKarpY0+jjVBJVBEycqoUJKE3tPN19ca+eQR4hOoK6tMw==}
+    engines: {node: '>=22.14.0'}
+
+  '@rljson/json@0.0.7':
+    resolution: {integrity: sha512-8he5W+EVRH8Rwgtjzz9YNvqp506PZlzmxuNmeI4rwru3vCIlIQ9Yy46cqcpeUQc2VQbSj5enoPvNGOAJDkisZg==}
+    engines: {node: '>=22.14.0'}
+
   '@rljson/json@0.0.8':
     resolution: {integrity: sha512-bYZp2S/xZ3ODA8sejxhoUW5A1GKonWWBxJcTw8jk1+nkugDOM+ehEBylTCY38o4bol6DAIzjT6JM0pu4fmrbfQ==}
+    engines: {node: '>=22.14.0'}
+
+  '@rljson/rljson@0.0.7':
+    resolution: {integrity: sha512-ym7m/25QXv7fZxgCXfmfSnZwKULn3xN09jqPxRofPwajot+OL7zqbezWOL+x2wOLrmR+EswmSVCvUk7kUc4YCA==}
     engines: {node: '>=22.14.0'}
 
   '@rollup/pluginutils@5.1.4':
@@ -2003,7 +2012,20 @@ snapshots:
       '@rljson/json': 0.0.8
       js-base64: 3.7.7
 
+  '@rljson/hash@0.0.9':
+    dependencies:
+      '@aws-crypto/sha256-js': 5.2.0
+      '@rljson/json': 0.0.7
+      js-base64: 3.7.7
+
+  '@rljson/json@0.0.7': {}
+
   '@rljson/json@0.0.8': {}
+
+  '@rljson/rljson@0.0.7':
+    dependencies:
+      '@rljson/hash': 0.0.9
+      '@rljson/json': 0.0.7
 
   '@rollup/pluginutils@5.1.4(rollup@4.35.0)':
     dependencies:
