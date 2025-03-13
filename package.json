@@ -1,6 +1,6 @@
 {
   "name": "@rljson/validate",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Validate rljson files",
   "homepage": "https://github.com/rljson/validate",
   "bugs": "https://github.com/rljson/validate/issues",
@@ -50,8 +50,8 @@
   },
   "dependencies": {
     "@rljson/hash": "^0.0.10",
-    "@rljson/json": "^0.0.8",
-    "@rljson/rljson": "^0.0.7"
+    "@rljson/json": "^0.0.9",
+    "@rljson/rljson": "^0.0.9"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
