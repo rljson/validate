@@ -42,6 +42,10 @@ export class Validate {
     return errors as Errors;
   }
 
+  static isValidFieldName(fieldName: string): boolean {
+    return /^[a-z][a-zA-Z0-9]*$/.test(fieldName);
+  }
+
   // ######################
   // Private
   // ######################
@@ -53,7 +57,7 @@ export class Validate {
         continue;
       }
 
-      if (!/^[a-z][a-zA-Z0-9]*$/.test(tableName)) {
+      if (!Validate.isValidFieldName(tableName)) {
         invalidTableNames.push(tableName);
       }
     }
@@ -86,7 +90,7 @@ export class Validate {
             continue;
           }
 
-          if (!/^[a-z][a-zA-Z0-9]*$/.test(columnName)) {
+          if (!Validate.isValidFieldName(columnName)) {
             invalidColumnNames[tableName] ??= [];
             invalidColumnNames[tableName].push(columnName);
             hadErrors = true;
@@ -131,3 +135,11 @@ export class Validate {
 export const validate = (rljson: Rljson): Errors => {
   return new Validate(rljson).result;
 };
+
+/**
+ * Validates an field name
+ * @param fieldName - The field name to validate
+ * @returns true if the field name is valid, false otherwise
+ */
+export const isValidFieldName = (fieldName: string): boolean =>
+  Validate.isValidFieldName(fieldName);
