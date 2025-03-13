@@ -8,7 +8,7 @@ import { hip } from '@rljson/hash';
 
 import { describe, expect, it } from 'vitest';
 
-import { validate } from '../src/validate';
+import { isValidFieldName, validate } from '../src/validate';
 
 describe('Validate', () => {
   describe('tableNamesAreLowerCamelCase()', () => {
@@ -269,6 +269,16 @@ describe('Validate', () => {
           },
         });
       });
+    });
+  });
+
+  describe('isValidFieldName()', () => {
+    it('returns true for valid field names', () => {
+      expect(isValidFieldName('helloWorld')).toBe(true);
+    });
+    it('returns false for invalid field names', () => {
+      expect(isValidFieldName('HelloWorld')).toBe(false);
+      expect(isValidFieldName('hello$World')).toBe(false);
     });
   });
 });

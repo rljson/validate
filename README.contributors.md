@@ -17,11 +17,12 @@
   - [Install GitHub CLI](#install-github-cli)
 - [Develop](#develop)
   - [Read architecture doc](#read-architecture-doc)
-  - [Checkout main](#checkout-main)
-  - [Create a branch](#create-a-branch)
   - [Debug](#debug)
   - [Update goldens](#update-goldens)
   - [Test and Build](#test-and-build)
+- [Workflow](#workflow)
+  - [Checkout main](#checkout-main)
+  - [Create a branch](#create-a-branch)
   - [Commit](#commit)
   - [Update dependencies](#update-dependencies)
   - [Increase version](#increase-version)
@@ -40,8 +41,8 @@
 ### Check out
 
 ```bash
-mkdir rljson
-cd rljson
+mkdir validate
+cd validate
 git clone https://github.com/rljson/validate.git
 cd validate
 ```
@@ -108,25 +109,6 @@ gh auth login
 Read [README.architecture.md](./README.architecture.md) to get an overview
 of the package's architecture.
 
-### Checkout main
-
-```bash
-git checkout main && \
-git fetch && \
-git pull
-```
-
-### Create a branch
-
-Please replace `Commit Message` in the next command by your commit message.
-It will also used for branch name and pull request
-
-```bash
-export MESSAGE="Update README.contributors.md" && \
-export BRANCH=`echo "$MESSAGE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_]/_/g'` &&\
-git checkout -b $BRANCH
-```
-
 ### Debug
 
 In Vscode: At the `left side bar` click on the `Test tube` icon to open the `Test explorer`.
@@ -157,14 +139,39 @@ pnpm test &&\
 pnpm build
 ```
 
+<!-- ........................................................................-->
+
+## Workflow
+
+### Checkout main
+
+```bash
+git checkout main && \
+git fetch && \
+git pull
+```
+
+### Create a branch
+
+Please replace `Commit Message` in the next command by your commit message.
+It will also used for branch name and pull request
+
+```bash
+export MESSAGE="Add isValidFieldName" && \
+export BRANCH=`echo "$MESSAGE" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_]/_/g'` &&\
+git checkout -b $BRANCH
+```
+
 ### Commit
 
 Develop your feature
 
 Commit your changes
 
+If you only have one thing, execute
+
 ```bash
-git commit -am"$MESSAGE"
+git add . && git commit -m "$MESSAGE"
 ```
 
 ### Update dependencies
@@ -173,7 +180,7 @@ We aim to work with the latest versions of our dependencies.
 
 ```bash
 pnpm update --latest &&\
-git commit -am"Update dependencies"
+git commit -m"Update dependencies"
 ```
 
 ### Increase version
@@ -196,10 +203,12 @@ gh pr merge --auto --squash
 Get the PR URL with the following command
 
 ```bash
-gh pr view --json url -q .url
+echo -e "\033[34m$(gh pr view --json url | jq -r '.url')\033[0m"
+echo "Wait until PR is closed ..." && \
+until gh pr view --json closed | jq -e '.closed == true' >/dev/null; do
+  sleep 2 >/dev/null;
+done;
 ```
-
-Visit it
 
 ### Delete feature branch
 
