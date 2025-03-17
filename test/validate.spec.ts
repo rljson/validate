@@ -43,7 +43,7 @@ describe('Validate', () => {
         });
         expect(r.tableNamesAreLowerCamelCase).toEqual({
           error: 'Table names must be lower camel case',
-          invalidTableNames: ['1table'],
+          tables: ['1table'],
         });
       });
       it('when a table name contains a space', () => {
@@ -52,7 +52,7 @@ describe('Validate', () => {
         });
         expect(r.tableNamesAreLowerCamelCase).toEqual({
           error: 'Table names must be lower camel case',
-          invalidTableNames: ['table one'],
+          tables: ['table one'],
         });
       });
 
@@ -62,7 +62,7 @@ describe('Validate', () => {
         });
         expect(r.tableNamesAreLowerCamelCase).toEqual({
           error: 'Table names must be lower camel case',
-          invalidTableNames: ['table-one'],
+          tables: ['table-one'],
         });
       });
 
@@ -72,7 +72,7 @@ describe('Validate', () => {
         });
         expect(r.tableNamesAreLowerCamelCase).toEqual({
           error: 'Table names must be lower camel case',
-          invalidTableNames: ['table_one'],
+          tables: ['table_one'],
         });
       });
 
@@ -82,7 +82,7 @@ describe('Validate', () => {
         });
         expect(r.tableNamesAreLowerCamelCase).toEqual({
           error: 'Table names must be lower camel case',
-          invalidTableNames: ['TableOne'],
+          tables: ['TableOne'],
         });
       });
 
@@ -96,13 +96,7 @@ describe('Validate', () => {
         });
         expect(r.tableNamesAreLowerCamelCase).toEqual({
           error: 'Table names must be lower camel case',
-          invalidTableNames: [
-            '1table',
-            'table one',
-            'table-one',
-            'table_one',
-            'TableOne',
-          ],
+          tables: ['1table', 'table one', 'table-one', 'table_one', 'TableOne'],
         });
       });
 
@@ -112,7 +106,51 @@ describe('Validate', () => {
         });
         expect(r.tableNamesAreLowerCamelCase).toEqual({
           error: 'Table names must be lower camel case',
-          invalidTableNames: [''],
+          tables: [''],
+        });
+      });
+    });
+  });
+
+  describe('tableNamesDoNotStartWithNumber()', () => {
+    describe('returns "ok"', () => {
+      it('when all table names do not start with a number', () => {
+        const r = validate({
+          tableOne: { _type: 'properties', _data: [] },
+          tableTwo: { _type: 'properties', _data: [] },
+        });
+        expect(r).toEqual({ hasErrors: false });
+      });
+
+      it('when private keys are like _type or _hash are contained', () => {
+        const r = validate({
+          _type: 'properties',
+        });
+        expect(r).toEqual({ hasErrors: false });
+      });
+    });
+
+    describe('returns an error JSON', () => {
+      it('when a table name starts with a number', () => {
+        const r = validate({
+          '1table': { _type: 'properties', _data: [] },
+        });
+        expect(r.tableNamesDoNotStartWithANumber).toEqual({
+          error: 'Table names must not start with a number',
+          tables: ['1table'],
+        });
+      });
+
+      it('when multiple table names are invalid', () => {
+        const r = validate({
+          '1table': { _type: 'properties', _data: [] },
+          tableOne: { _type: 'properties', _data: [] },
+          tableTwo: { _type: 'properties', _data: [] },
+          tableThree: { _type: 'properties', _data: [] },
+        });
+        expect(r.tableNamesDoNotStartWithANumber).toEqual({
+          error: 'Table names must not start with a number',
+          tables: ['1table'],
         });
       });
     });
@@ -239,8 +277,10 @@ describe('Validate', () => {
           validate({
             tableOne: { _type: 'properties', _data: [] },
             tableTwo: { _type: 'properties', _data: [] },
-          }).hasErrors,
-        ).toBe(false);
+          }),
+        ).toEqual({
+          hasErrors: false,
+        });
       });
 
       it('when there are valid hashes', () => {
@@ -250,8 +290,10 @@ describe('Validate', () => {
               tableOne: { _type: 'properties', _data: [] },
               tableTwo: { _type: 'properties', _data: [] },
             }),
-          ).hasErrors,
-        ).toBe(false);
+          ),
+        ).toEqual({
+          hasErrors: false,
+        });
       });
     });
 
@@ -263,7 +305,7 @@ describe('Validate', () => {
 
         expect(errors).toEqual({
           hasErrors: true,
-          hashValidation: {
+          hasValidHashes: {
             error:
               'Hash at /tableOne "invalid" is wrong. Should be "DKwor-pULmCs6RY-sMyfrM".',
           },

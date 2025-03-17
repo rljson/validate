@@ -12,8 +12,9 @@ import { Rljson, RljsonTable } from '@rljson/rljson';
 export interface Errors {
   tableNamesAreLowerCamelCase?: Json;
   columnNamesAreLowerCamelCase?: Json;
-  hashesAreOk?: Json;
+  tableNamesDoNotStartWithANumber?: Json;
 
+  hasValidHashes?: Json;
   hasErrors: boolean;
 }
 
@@ -35,8 +36,9 @@ export class Validate {
     const errors: any = {};
 
     this._tableNamesAreLowerCamelCase(errors);
+    this._tableNamesDoNotStartWithNumber(errors);
     this._columnNamesAreLowerCamelCase(errors);
-    this._hashesAreOk(errors);
+    this._hasValidHashes(errors);
     errors.hasErrors = Object.keys(errors).length > 0;
 
     return errors as Errors;
@@ -65,7 +67,29 @@ export class Validate {
     if (invalidTableNames.length > 0) {
       errors.tableNamesAreLowerCamelCase = {
         error: 'Table names must be lower camel case',
-        invalidTableNames: invalidTableNames,
+        tables: invalidTableNames,
+      };
+    }
+  }
+
+  // ...........................................................................
+  private _tableNamesDoNotStartWithNumber(errors: Json): void {
+    const invalidTableNames: string[] = [];
+
+    for (const tableName in this.rljson) {
+      if (tableName.startsWith('_')) {
+        continue;
+      }
+
+      if (/^[0-9]/.test(tableName)) {
+        invalidTableNames.push(tableName);
+      }
+    }
+
+    if (invalidTableNames.length > 0) {
+      errors.tableNamesDoNotStartWithANumber = {
+        error: 'Table names must not start with a number',
+        tables: invalidTableNames,
       };
     }
   }
@@ -108,17 +132,17 @@ export class Validate {
   }
 
   // ...........................................................................
-  private _hashesAreOk(errors: Json): void {
+  private _hasValidHashes(errors: Json): void {
     try {
       Hash.default.validate(this.rljson, { ignoreMissingHashes: true });
     } catch (error: any) {
       if (error instanceof Error) {
-        errors.hashValidation = {
+        errors.hasValidHashes = {
           error: error.message,
         };
         /* v8 ignore start */
       } else {
-        errors.hashesAreOk = {
+        errors.hasValidHashes = {
           error: 'Unknown error',
         };
       }
