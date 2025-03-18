@@ -4,4 +4,5 @@
 // Use of this source code is governed by terms that can be
 // found in the LICENSE file in the root of this package.
 
-export { Validate, validate, type Errors } from './validate.ts';
+export { BaseValidator, Validate, type ValidationResult } from '@rljson/rljson';
+export { validate } from './validate.ts';

@@ -4,323 +4,36 @@
 // Use of this source code is governed by terms that can be
 // found in the LICENSE file in the root of this package.
 
-import { hip } from '@rljson/hash';
+import { Example, Rljson } from '@rljson/rljson';
 
 import { describe, expect, it } from 'vitest';
 
-import { isValidFieldName, validate } from '../src/validate';
+import { validate } from '../src/validate';
 
-describe('Validate', () => {
-  describe('tableNamesAreLowerCamelCase()', () => {
-    describe('returns no errors', () => {
-      describe('when all table names have camel case fields', () => {
-        it('for an empy rljson object', () => {
-          const r = validate({});
-          expect(r).toEqual({ hasErrors: false });
-        });
-
-        it('for an rljson object with valid table names', () => {
-          const r = validate({
-            tableOne: { _type: 'properties', _data: [] },
-            tableTwo: { _type: 'properties', _data: [] },
-          });
-          expect(r).toEqual({ hasErrors: false });
-        });
-      });
-
-      it('when private keys are like _type or _hash are contained', () => {
-        const r = validate({
-          _type: 'properties',
-        });
-        expect(r).toEqual({ hasErrors: false });
-      });
-    });
-
-    describe('returns an error JSON', () => {
-      it('when a table name starts with a number', () => {
-        const r = validate({
-          '1table': { _type: 'properties', _data: [] },
-        });
-        expect(r.tableNamesAreLowerCamelCase).toEqual({
-          error: 'Table names must be lower camel case',
-          tables: ['1table'],
-        });
-      });
-      it('when a table name contains a space', () => {
-        const r = validate({
-          'table one': { _type: 'properties', _data: [] },
-        });
-        expect(r.tableNamesAreLowerCamelCase).toEqual({
-          error: 'Table names must be lower camel case',
-          tables: ['table one'],
-        });
-      });
-
-      it('when a table name contains a dash', () => {
-        const r = validate({
-          'table-one': { _type: 'properties', _data: [] },
-        });
-        expect(r.tableNamesAreLowerCamelCase).toEqual({
-          error: 'Table names must be lower camel case',
-          tables: ['table-one'],
-        });
-      });
-
-      it('when a table name contains an underscore', () => {
-        const r = validate({
-          table_one: { _type: 'properties', _data: [] },
-        });
-        expect(r.tableNamesAreLowerCamelCase).toEqual({
-          error: 'Table names must be lower camel case',
-          tables: ['table_one'],
-        });
-      });
-
-      it('when a table name contains a capital letter', () => {
-        const r = validate({
-          TableOne: { _type: 'properties', _data: [] },
-        });
-        expect(r.tableNamesAreLowerCamelCase).toEqual({
-          error: 'Table names must be lower camel case',
-          tables: ['TableOne'],
-        });
-      });
-
-      it('when multiple table names are invalid', () => {
-        const r = validate({
-          '1table': { _type: 'properties', _data: [] },
-          'table one': { _type: 'properties', _data: [] },
-          'table-one': { _type: 'properties', _data: [] },
-          table_one: { _type: 'properties', _data: [] },
-          TableOne: { _type: 'properties', _data: [] },
-        });
-        expect(r.tableNamesAreLowerCamelCase).toEqual({
-          error: 'Table names must be lower camel case',
-          tables: ['1table', 'table one', 'table-one', 'table_one', 'TableOne'],
-        });
-      });
-
-      it('when a table name is an empty string', () => {
-        const r = validate({
-          '': { _type: 'properties', _data: [] },
-        });
-        expect(r.tableNamesAreLowerCamelCase).toEqual({
-          error: 'Table names must be lower camel case',
-          tables: [''],
-        });
-      });
-    });
-  });
-
-  describe('tableNamesDoNotStartWithNumber()', () => {
-    describe('returns "ok"', () => {
-      it('when all table names do not start with a number', () => {
-        const r = validate({
-          tableOne: { _type: 'properties', _data: [] },
-          tableTwo: { _type: 'properties', _data: [] },
-        });
-        expect(r).toEqual({ hasErrors: false });
-      });
-
-      it('when private keys are like _type or _hash are contained', () => {
-        const r = validate({
-          _type: 'properties',
-        });
-        expect(r).toEqual({ hasErrors: false });
-      });
-    });
-
-    describe('returns an error JSON', () => {
-      it('when a table name starts with a number', () => {
-        const r = validate({
-          '1table': { _type: 'properties', _data: [] },
-        });
-        expect(r.tableNamesDoNotStartWithANumber).toEqual({
-          error: 'Table names must not start with a number',
-          tables: ['1table'],
-        });
-      });
-
-      it('when multiple table names are invalid', () => {
-        const r = validate({
-          '1table': { _type: 'properties', _data: [] },
-          tableOne: { _type: 'properties', _data: [] },
-          tableTwo: { _type: 'properties', _data: [] },
-          tableThree: { _type: 'properties', _data: [] },
-        });
-        expect(r.tableNamesDoNotStartWithANumber).toEqual({
-          error: 'Table names must not start with a number',
-          tables: ['1table'],
-        });
-      });
-    });
-  });
-
-  describe('columnNamesAreLowerCamelCase()', () => {
-    describe('returns "ok"', () => {
-      it('when all column names have camel case fields', () => {
-        const r = validate({
-          tableOne: { _type: 'properties', _data: [{ columnOne: 123 }] },
-          tableTwo: { _type: 'properties', _data: [{ columnTwo: 456 }] },
-        });
-        expect(r).toEqual({ hasErrors: false });
-      });
-
-      it('when private keys are like _type or _hash are contained', () => {
-        const r = validate({
-          tableOne: {
-            _type: 'properties',
-            _data: [{ _type: 123 }],
-          },
-        });
-        expect(r).toEqual({ hasErrors: false });
-      });
-    });
-
-    describe('returns an error JSON', () => {
-      it('when a column name starts with a number', () => {
-        const r = validate({
-          tableOne: { _type: 'properties', _data: [{ '1column': 123 }] },
-        });
-        expect(r.columnNamesAreLowerCamelCase).toEqual({
-          error: 'Column names must be lower camel case',
-          invalidColumnNames: { tableOne: ['1column'] },
-        });
-      });
-
-      it('when a column name contains a space', () => {
-        const r = validate({
-          tableOne: { _type: 'properties', _data: [{ 'column one': 123 }] },
-        });
-        expect(r.columnNamesAreLowerCamelCase).toEqual({
-          error: 'Column names must be lower camel case',
-          invalidColumnNames: { tableOne: ['column one'] },
-        });
-      });
-
-      it('when a column name contains a dash', () => {
-        const r = validate({
-          tableOne: { _type: 'properties', _data: [{ 'column-one': 123 }] },
-        });
-        expect(r.columnNamesAreLowerCamelCase).toEqual({
-          error: 'Column names must be lower camel case',
-          invalidColumnNames: { tableOne: ['column-one'] },
-        });
-      });
-
-      it('when a column name contains an underscore', () => {
-        const r = validate({
-          tableOne: { _type: 'properties', _data: [{ column_one: 123 }] },
-        });
-        expect(r.columnNamesAreLowerCamelCase).toEqual({
-          error: 'Column names must be lower camel case',
-          invalidColumnNames: { tableOne: ['column_one'] },
-        });
-      });
-
-      it('when a column name contains a capital letter', () => {
-        const r = validate({
-          tableOne: { _type: 'properties', _data: [{ ColumnOne: 123 }] },
-        });
-        expect(r.columnNamesAreLowerCamelCase).toEqual({
-          error: 'Column names must be lower camel case',
-          invalidColumnNames: { tableOne: ['ColumnOne'] },
-        });
-      });
-
-      it('when multiple column names are invalid', () => {
-        const r = validate({
-          tableOne: {
-            _type: 'properties',
-            _data: [
-              { '1column': 123, 'column one': 456, 'column-one': 789 },
-              { column_one: 101, ColumnOne: 202 },
-            ],
-          },
-
-          tableTwo: {
-            _type: 'properties',
-            _data: [{ '1xyz': 123 }, { xy_38: 101 }],
-          },
-        });
-        expect(r.columnNamesAreLowerCamelCase).toEqual({
-          error: 'Column names must be lower camel case',
-          invalidColumnNames: {
-            tableOne: [
-              '1column',
-              'column one',
-              'column-one',
-              'column_one',
-              'ColumnOne',
-            ],
-            tableTwo: ['1xyz', 'xy_38'],
-          },
-        });
-      });
-
-      it('when a column name is an empty string', () => {
-        const r = validate({
-          tableOne: { _type: 'properties', _data: [{ '': 123 }] },
-        });
-        expect(r.columnNamesAreLowerCamelCase).toEqual({
-          error: 'Column names must be lower camel case',
-          invalidColumnNames: { tableOne: [''] },
-        });
-      });
-    });
-  });
-
-  describe('hashesAreOk()', () => {
-    describe('returns no errors', () => {
-      it('when there are no hashes', () => {
-        expect(
-          validate({
-            tableOne: { _type: 'properties', _data: [] },
-            tableTwo: { _type: 'properties', _data: [] },
-          }),
-        ).toEqual({
+describe('validate', () => {
+  describe('validates the rljson', async () => {
+    it('and returns an success ', async () => {
+      const bakery = Example.ok.bakery();
+      const result = await validate(bakery);
+      expect(result).toEqual({
+        syntax: {
           hasErrors: false,
-        });
-      });
-
-      it('when there are valid hashes', () => {
-        expect(
-          validate(
-            hip({
-              tableOne: { _type: 'properties', _data: [] },
-              tableTwo: { _type: 'properties', _data: [] },
-            }),
-          ),
-        ).toEqual({
-          hasErrors: false,
-        });
+        },
       });
     });
 
-    describe('throws', () => {
-      it('when hashes are invalid', () => {
-        const errors = validate({
-          tableOne: { _type: 'properties', _data: [], _hash: 'invalid' },
-        });
-
-        expect(errors).toEqual({
+    it('and returns validation errors', async () => {
+      const errorRljson = Example.broken.base.brokenTableName() as Rljson;
+      const result = await validate(errorRljson);
+      expect(result).toEqual({
+        syntax: {
           hasErrors: true,
-          hasValidHashes: {
-            error:
-              'Hash at /tableOne "invalid" is wrong. Should be "DKwor-pULmCs6RY-sMyfrM".',
+          tableNamesNotLowerCamelCase: {
+            error: 'Table names must be lower camel case',
+            invalidTableNames: ['brok$en'],
           },
-        });
+        },
       });
-    });
-  });
-
-  describe('isValidFieldName()', () => {
-    it('returns true for valid field names', () => {
-      expect(isValidFieldName('helloWorld')).toBe(true);
-    });
-    it('returns false for invalid field names', () => {
-      expect(isValidFieldName('HelloWorld')).toBe(false);
-      expect(isValidFieldName('hello$World')).toBe(false);
     });
   });
 });
