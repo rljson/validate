@@ -12,21 +12,17 @@ import { validate } from '../src/validate';
 
 describe('validate', () => {
   describe('validates the rljson', async () => {
-    it('and returns an success ', async () => {
+    it('and returns an empty object on success ', async () => {
       const bakery = Example.ok.bakery();
       const result = await validate(bakery);
-      expect(result).toEqual({
-        syntax: {
-          hasErrors: false,
-        },
-      });
+      expect(result).toEqual({});
     });
 
     it('and returns validation errors', async () => {
       const errorRljson = Example.broken.base.brokenTableName() as Rljson;
       const result = await validate(errorRljson);
       expect(result).toEqual({
-        syntax: {
+        base: {
           hasErrors: true,
           tableNamesNotLowerCamelCase: {
             error: 'Table names must be lower camel case',
