@@ -33,13 +33,13 @@ git pull
 
 ## Set pull request title
 
-Replace `update-doc-settings-and-scripts.js: Checkout to ../` here and below
+Replace `Update dependencies` here and below
 by your new pull request title.
 
 ## Create a feature branch
 
 ```bash
-node scripts/create-branch.js "update-doc-settings-and-scripts.js: Checkout to ../"
+node scripts/create-branch.js "Update dependencies"
 ```
 
 ## Update dependencies
@@ -65,7 +65,7 @@ In Vscode, press
 
 ```bash
 git add .
-git commit -am"update-doc-settings-and-scripts.js: Checkout to ../"
+git commit -am"Update dependencies"
 ```
 
 ## Increase version
@@ -96,7 +96,7 @@ node scripts/push-branch.js
 ## Create a pull request
 
 ```bash
-gh pr create --base main --title "update-doc-settings-and-scripts.js: Checkout to ../" --body " "
+gh pr create --base main --title "Update dependencies" --body " "
 ```
 
 ## Code review
