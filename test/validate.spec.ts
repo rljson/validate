@@ -10,6 +10,7 @@ import { describe, expect, it } from 'vitest';
 
 import { validate } from '../src/validate';
 
+
 describe('validate', () => {
   describe('validates the rljson', async () => {
     it('and returns an empty object on success ', async () => {
@@ -19,7 +20,7 @@ describe('validate', () => {
     });
 
     it('and returns validation errors', async () => {
-      const errorRljson = Example.broken.base.brokenTableKey() as Rljson;
+      const errorRljson = Example.broken.base.brokenTableKey() as any as Rljson;
       const result = await validate(errorRljson);
       expect(result).toEqual({
         base: {

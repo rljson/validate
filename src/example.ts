@@ -8,6 +8,7 @@ import { Rljson } from '@rljson/rljson';
 
 import { validate } from './validate.ts';
 
+
 /**
  * The example function demonstrates how the package works
  */
@@ -18,8 +19,8 @@ export const example = () => {
   // ..........................................
   h1('Rljson is fine? validate return empty JSON.');
   const okJson: Rljson = {
-    tableOne: { _type: 'ingredients', _data: [] },
-    tableTwo: { _type: 'ingredients', _data: [] },
+    tableOne: { _type: 'components', _data: [] },
+    tableTwo: { _type: 'components', _data: [] },
   };
   const okResult = validate(okJson);
   p(JSON.stringify(okResult, null, 2));
@@ -27,8 +28,8 @@ export const example = () => {
   // ..............................................
   h1('Table is missing? validate returns error JSON.');
   const errJson: Rljson = {
-    table_One: { _type: 'ingredients', _data: [{ x_7: 5 }] },
-    table_Two: { _type: 'ingredients', _data: [] },
+    table_One: { _type: 'components', _data: [{ x_7: 5 }] },
+    table_Two: { _type: 'components', _data: [] },
   };
   const errResult = validate(errJson);
   p(JSON.stringify(errResult, null, 2));
@@ -36,8 +37,8 @@ export const example = () => {
   // ..............................................
   h1('Table name starts with underscore? No error is returned.');
   const ignoredJson: Rljson = {
-    _tableOne: { _type: 'ingredients', _data: [] },
-    tableTwo: { _type: 'ingredients', _data: [] },
+    _tableOne: { _type: 'components', _data: [] },
+    tableTwo: { _type: 'components', _data: [] },
   };
   const ignoredResult = validate(ignoredJson);
   p(JSON.stringify(ignoredResult, null, 2));
