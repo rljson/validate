@@ -2,4 +2,4 @@
 // Kept in sync by test/validate_version.spec.ts.
 
 /** The version of the `@rljson/validate` package. */
-export const validateVersion = '0.0.13';
+export const validateVersion = '0.0.14';
