@@ -1,6 +1,6 @@
 {
   "name": "@rljson/validate",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Validate rljson files",
   "homepage": "https://github.com/rljson/validate",
   "bugs": "https://github.com/rljson/validate/issues",
